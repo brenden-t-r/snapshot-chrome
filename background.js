@@ -4,8 +4,3 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     file: 'content.js'
   });
 });
-
-
-chrome.commands.onCommand.addListener(function(command){
-   chrome.tabs.create({url: "http://www.google.com/" + command});
-});

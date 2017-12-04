@@ -13,11 +13,4 @@
     "default_title": "Print inside console when clicked"
   },
   "manifest_version": 2,
-   "commands": {
-        "testShortkut": {
-            "suggested_key": {
-              "default": "Ctrl+Shift+3"
-            }, "description": "A test shortcut"
-          }
-   }
 }
