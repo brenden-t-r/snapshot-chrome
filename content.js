@@ -1,4 +1,7 @@
 
+/*
+Create invisible 'canvas' element to overlay on page
+*/
 var canvas = document.createElement("canvas");
 canvas.id = "canvas";
 canvas.style.width = "100px";
@@ -11,23 +14,13 @@ canvas.style.width = '100%';
 canvas.style.height = '100%';
 document.body.appendChild( canvas );
 
-var canvasElement = document.getElementById('canvas');
-console.log(canvasElement);
-
 draw(document.getElementById('canvas'));
 
+/*
+Draw rectange on page. Click once to start rectange, again to finish.
+*/
 function draw(canvas) {
-    function setMousePosition(e) {
-        var ev = e || window.event; //Moz || IE
-        if (ev.pageX) { //Moz
-            mouse.x = ev.pageX + window.pageXOffset;
-            mouse.y = ev.pageY + window.pageYOffset;
-        } else if (ev.clientX) { //IE
-            mouse.x = ev.clientX + document.body.scrollLeft;
-            mouse.y = ev.clientY + document.body.scrollTop;
-		}
-	};
-	
+   
 	var mouse = {
 		x: 0,
 		y: 0,
@@ -36,7 +29,12 @@ function draw(canvas) {
 	};
 	var element = null;
 	
-	canvas.onmousemove = function (e) {
+	canvas.style.cursor = "crosshair";
+	
+	canvas.addEventListener("mousemove", mouseMoveHandler)
+	canvas.addEventListener("click", clickHandler);
+	
+	function mouseMoveHandler(e) {
 		setMousePosition(e);
 		 if (element !== null) {
             element.style.width = Math.abs(mouse.x - mouse.startX) + 'px';
@@ -44,17 +42,23 @@ function draw(canvas) {
             element.style.left = (mouse.x - mouse.startX < 0) ? mouse.x + 'px' : mouse.startX + 'px';
             element.style.top = (mouse.y - mouse.startY < 0) ? mouse.y + 'px' : mouse.startY + 'px';
         }
-    }
+	}
 	
-	document.body.onclick = function (e) {
-		console.log("Click");
-		console.log(element);
+	function setMousePosition(e) {
+        mouse.x = e.pageX + window.pageXOffset;
+        mouse.y = e.pageY + window.pageYOffset;
+	};
+	
+	function clickHandler(e) {
         if (element !== null) {
             element = null;
             canvas.style.cursor = "default";
-            console.log("finsihed.");
+			
+			// Remove event listeners
+			canvas.removeEventListener("click", clickHandler);
+			canvas.removeEventListener("mousemove", mouseMoveHandler);
+			 
         } else {
-            console.log("begun.");
             mouse.startX = mouse.x;
             mouse.startY = mouse.y;
             element = document.createElement('div');
@@ -67,7 +71,6 @@ function draw(canvas) {
 			element.style.background = "#EEEEFF";
 			element.style.opacity = 0.3;
             document.body.appendChild(element)
-            canvas.style.cursor = "crosshair";
         }
     }
 }
